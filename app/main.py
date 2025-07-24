@@ -26,7 +26,7 @@ def build_prompt(text: str) -> str:
 """
 
 def get_response(prompt: str):
-    providers = [OpenaiChat, Yqcloud, Aichat, You]
+    providers = [OpenaiChat, Yqcloud, You]
     for provider in providers:
         try:
             with lock:
