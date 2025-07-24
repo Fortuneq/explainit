@@ -1,0 +1,4 @@
+Flask
+g4f
+SQLAlchemy
+psycopg2-binary
