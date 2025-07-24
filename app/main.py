@@ -1,7 +1,7 @@
 import time, secrets, threading
 from flask import Flask, request, jsonify
 from g4f.client import Client
-from g4f.Provider import OpenaiChat, Yqcloud, Aichat, You
+from g4f.Provider import OpenaiChat, Yqcloud, You
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
