@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ***REMOVED***
       POSTGRES_DB: explainitsimple
     ports:
-      - "6432:6432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/explainitsimple
+      - DATABASE_URL=postgresql://root:***REMOVED***@db:5432/explainitsimple
     command: >
       sh -c "python db/init_db.py && python main.py"
     restart: always
