@@ -2,3 +2,4 @@ python-telegram-bot==20.0
 SQLAlchemy
 requests
 psycopg2-binary
+gTTS
