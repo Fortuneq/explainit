@@ -79,7 +79,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if query.data == "premium":
         await context.bot.send_message(
-            "🔐 Подписка на премиум пока недоступна, но скоро появится!",
+            chat_id=query.message.chat_id,
+            text="🔐 Подписка на премиум пока недоступна, но скоро появится!",
         )
 
     elif query.data == "generate_podcast":
@@ -93,7 +94,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             if last_log:
                 await context.bot.send_message(
-                    "🎙 Генерирую подкаст...",
+                    chat_id=query.message.chat_id,
+                    text= "🎙 Генерирую подкаст...",
                 )
 
                 # Генерация TTS
