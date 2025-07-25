@@ -1,35 +1,47 @@
 import logging
 import os
-
 import requests
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import (
-    ApplicationBuilder, CommandHandler, MessageHandler,
-    CallbackQueryHandler, ContextTypes, filters
-)
 from tempfile import NamedTemporaryFile
-from telegram.constants import ChatAction
+from gtts import gTTS
+
+from telegram import (
+    Update,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton
+)
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+    filters
+)
+
 from db.database import SessionLocal
 from db.models import GenerationLog
 
 API_URL = "http://app:5000/explain"
 logging.basicConfig(level=logging.INFO)
 
-# START
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# Вспомогательная функция для inline-клавиатуры
+def get_main_keyboard():
     keyboard = [
         [
             InlineKeyboardButton("🔑 Премиум", callback_data="premium"),
             InlineKeyboardButton("🎙 Сгенерировать подкаст", callback_data="generate_podcast")
         ]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    return InlineKeyboardMarkup(keyboard)
+
+# Команда /start
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Привет! Отправь мне любой сложный текст, и я объясню его просто.",
-        reply_markup=reply_markup
+        reply_markup=get_main_keyboard()
     )
 
-# EXPLAIN
+# Обработка любого текста
 async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
     try:
@@ -38,7 +50,10 @@ async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if "result" in result:
             explanation = result["result"]
-            await update.message.reply_text(explanation)
+            await update.message.reply_text(
+                explanation,
+                reply_markup=get_main_keyboard()
+            )
 
             log_to_db(
                 user_id=str(update.effective_user.id),
@@ -47,18 +62,27 @@ async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 response=explanation
             )
         else:
-            await update.message.reply_text(f"Ошибка: {result.get('error')}")
+            await update.message.reply_text(
+                f"Ошибка: {result.get('error')}",
+                reply_markup=get_main_keyboard()
+            )
     except Exception as e:
         logging.error(f"Ошибка: {e}")
-        await update.message.reply_text("Произошла ошибка. Попробуйте позже.")
+        await update.message.reply_text(
+            "Произошла ошибка. Попробуйте позже.",
+            reply_markup=get_main_keyboard()
+        )
 
-# CALLBACK (Inline buttons)
+# Обработка нажатий на inline-кнопки
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
     if query.data == "premium":
-        await query.edit_message_text("🔐 Подписка на премиум пока недоступна, но скоро появится!")
+        await query.edit_message_text(
+            "🔐 Подписка на премиум пока недоступна, но скоро появится!",
+            reply_markup=get_main_keyboard()
+        )
 
     elif query.data == "generate_podcast":
         session = SessionLocal()
@@ -70,8 +94,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 .first()
             )
             if last_log:
-                await query.edit_message_text("🎙 Генерирую подкаст...")
-                await context.bot.send_chat_action(chat_id=query.message.chat.id, action=ChatAction.UPLOAD_AUDIO)
+                await query.edit_message_text(
+                    "🎙 Генерирую подкаст...",
+                    reply_markup=get_main_keyboard()
+                )
 
                 # Генерация TTS
                 tts = gTTS(text=last_log.response, lang="ru")
@@ -87,12 +113,22 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
 
                 os.remove(audio_path)
+
+                await context.bot.send_message(
+                    chat_id=query.message.chat_id,
+                    text="🎧 Подкаст сгенерирован!",
+                    reply_markup=get_main_keyboard()
+                )
+
             else:
-                await query.edit_message_text("❗ Нет недавних объяснений для подкаста.")
+                await query.edit_message_text(
+                    "❗ Нет недавних объяснений для подкаста.",
+                    reply_markup=get_main_keyboard()
+                )
         finally:
             session.close()
 
-# LOGGING
+# Сохранение логов в БД
 def log_to_db(user_id, user_name, question, response):
     session = SessionLocal()
     try:
@@ -107,7 +143,7 @@ def log_to_db(user_id, user_name, question, response):
     finally:
         session.close()
 
-# MAIN
+# Основная точка входа
 def main():
     application = ApplicationBuilder().token("***REMOVED***").build()
 
