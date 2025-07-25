@@ -94,11 +94,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 .first()
             )
             if last_log:
-                await query.edit_message_text(
-                    "🎙 Генерирую подкаст...",
-                    reply_markup=get_main_keyboard()
-                )
-
                 # Генерация TTS
                 tts = gTTS(text=last_log.response, lang="ru")
                 with NamedTemporaryFile(delete=False, suffix=".mp3") as tmp:
