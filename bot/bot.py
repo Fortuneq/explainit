@@ -78,7 +78,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     if query.data == "premium":
-        await query.edit_message_text(
+        await context.bot.send_message(
             "🔐 Подписка на премиум пока недоступна, но скоро появится!",
         )
 
