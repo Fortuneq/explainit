@@ -38,7 +38,6 @@ def get_main_keyboard():
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Привет! Отправь мне любой сложный текст, и я объясню его просто.",
-        reply_markup=get_main_keyboard()
     )
 
 # Обработка любого текста
@@ -81,7 +80,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "premium":
         await query.edit_message_text(
             "🔐 Подписка на премиум пока недоступна, но скоро появится!",
-            reply_markup=get_main_keyboard()
         )
 
     elif query.data == "generate_podcast":
@@ -94,6 +92,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 .first()
             )
             if last_log:
+                await context.bot.send_message(
+                    "🎙 Генерирую подкаст...",
+                )
+
                 # Генерация TTS
                 tts = gTTS(text=last_log.response, lang="ru")
                 with NamedTemporaryFile(delete=False, suffix=".mp3") as tmp:
