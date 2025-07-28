@@ -14,6 +14,11 @@ class GenerationLog(Base):
     question = Column(Text)
     response = Column(Text)
 
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
 class Feedback(Base):
     __tablename__ = "feedback"
 
@@ -24,4 +29,4 @@ class Feedback(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
-Base.metadata.create_all(engine)
+
