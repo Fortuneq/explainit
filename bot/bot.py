@@ -53,7 +53,7 @@ async def handle_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "Спасибо за желание поддержать!\n\n"
             "💖 Вот ссылка для донатов:\n"
-            "https://boosty.to/yourpage\n\n"
+            "https://boosty.to/vlad_vlkv\n\n"
             "Там можно задонатить анонимно с карты или ЮMoney 🙏"
         )
         return
