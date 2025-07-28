@@ -106,7 +106,7 @@ def save_feedback(user_id, user_name, text):
     feedback = Feedback(
         user_id=user_id,
         user_name=user_name,
-        feedback=text
+        text=text
     )
     db.add(feedback)
     db.commit()
