@@ -78,7 +78,7 @@ async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
 
     try:
-        response = requests.post("http://backend:8080/explain", json={"text": text})
+        response = requests.post("http://app:8080/explain", json={"text": text})
         data = response.json()
         explanation = data.get("explanation", "Не удалось получить объяснение.")
 
