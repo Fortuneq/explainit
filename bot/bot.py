@@ -6,7 +6,7 @@ from telegram.ext import (
     ContextTypes, filters
 )
 from db.database import SessionLocal
-from db.models import GenerationLog, FeedbackLog
+from db.models import GenerationLog, Feedback
 import requests
 
 # Настройка логов
@@ -103,7 +103,7 @@ async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Сохраняем фидбек
 def save_feedback(user_id, user_name, text):
     db = SessionLocal()
-    feedback = FeedbackLog(
+    feedback = Feedback(
         user_id=user_id,
         user_name=user_name,
         feedback=text
