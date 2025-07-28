@@ -85,9 +85,9 @@ async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Логгируем запрос
         db = SessionLocal()
         log = GenerationLog(
-            user_id=str(user.id),
-            user_name=user.username or user.full_name,
-            question=text,
+            user_id=str(update.effective_user.id),
+            user_name=update.effective_user.username or update.effective_user.full_name,
+            question=user_text,
             response=explanation
         )
         db.add(log)
