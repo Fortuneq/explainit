@@ -15,6 +15,9 @@ logging.basicConfig(level=logging.INFO)
 # Хранилище для ожидания фидбека от конкретных пользователей
 feedback_waiting = set()
 
+API_URL = "http://app:5000/explain"
+
+
 # Клавиатура
 keyboard = ReplyKeyboardMarkup(
     [
@@ -71,16 +74,13 @@ async def handle_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Отправка текста на explain-сервер
 async def explain(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    user = update.effective_user
-
-    # Показываем "Печатает..."
-    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
-
+    user_text = update.message.text
     try:
-        response = requests.post("http://app:5000/explain", json={"text": text})
-        data = response.json()
-        explanation = data.get("explanation", "Не удалось получить объяснение.")
+        response = requests.post(API_URL, json={"text": user_text})
+        result = response.json()
+
+        if "result" in result:
+            explanation = result["result"]
 
         # Логгируем запрос
         db = SessionLocal()
