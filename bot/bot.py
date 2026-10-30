@@ -118,7 +118,7 @@ async def generate_podcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Запуск приложения
 def main():
-    application = ApplicationBuilder().token("***REMOVED***").build()
+    application = ApplicationBuilder().token(os.environ["BOT_TOKEN"]).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_all))

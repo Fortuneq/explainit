@@ -15,10 +15,9 @@ The API is rate-limited and tries several LLM providers in turn until one answer
 ## Run
 
 ```bash
+cp .env.example .env             # BOT_TOKEN and POSTGRES_PASSWORD
 docker compose up -d --build     # PostgreSQL, API and bot
 ```
-
-Environment: the bot token and database credentials are read from environment variables (see `docker-compose.yaml`).
 
 ## Stack
 

@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: explainitsimple
     ports:
       - "5432:5432"
@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://root:***REMOVED***@db:5432/explainitsimple
+      - DATABASE_URL=postgresql://root:${POSTGRES_PASSWORD}@db:5432/explainitsimple
     command: >
       sh -c "python db/init_db.py && python main.py"
     restart: always
@@ -33,6 +33,9 @@ services:
     container_name: explainitsimple_bot
     depends_on:
       - app
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DATABASE_URL=postgresql://root:${POSTGRES_PASSWORD}@db:5432/explainitsimple
     restart: always
 
 volumes:
